@@ -1,0 +1,119 @@
+# Lista 6 - Geração de outras variáveis aleatórias importantes
+
+<br>
+
+#### Gerar realizações de variáveis normais padrão utilizando as aproximações dadas por: 
+
+$$X = [U^{0,135} - (1-U^{0,135})]/0,1975$$  
+```{r}
+rnorm1 = function(n){
+  x = ((runif(n,0,1) ** 0.135) - (1 - runif(n,0,1) ** 0.135)) / 0.1975 
+  return(x)
+}
+```
+
+#### e da soma de 12 ou mais variáveis uniformes $(U_i ∼ U (0, 1))$  independentes,   
+$$ X = \displaystyle \sum^{12}_{i}U_i - 6$$  
+```{r}
+rnorm2 = function(n){
+  x = 0
+  for (i  in 1:12) {
+    x = x + (runif(n) - 6) 
+  }
+  return(x)
+}
+```
+
+
+
+
+**a) Criar as funções `rnorm1` e `rnorm2` e usá-las para gerar $n = 5.000$ realizações usando as duas funções.**
+```{r}
+n = 5000
+
+a = rnorm1(n) # Amostra gerada com a aproximação X = [U^0,135 − (1 − U)^0,135 ]/0,1975
+head(a)
+
+shapiro.test(rnorm1(n))  # A amostra 'a' gerada com a função rnorm1 não segue distribuição normal
+hist(rnorm1(n))
+
+b = rnorm2(n) # Amostra gerada com a aproximação soma de 12 v.a.s uniformes independentes
+head(b)
+
+shapiro.test(rnorm2(n)) # A amostra 'a' gerada com a função rnorm2 segue distribuição normal
+hist(rnorm2(n))
+```
+
+
+**b) Comparar os quantis 1%, 5%, 10%, 50%, 90%, 95% e 99% esperados da distribuição normal com os estimados.** 
+```{r}
+p = c(.01, .05, .1, .5, .9, .95, .99) #   quantis 1%, 5%, 10%, 50%, 90%, 95% e 99%
+Qhat = quantile(a, p)
+Q = qnorm(p)
+round(rbind(Qhat, Q), 3)             
+
+Qhat = quantile(b, p)
+Q = qnorm(p)
+round(rbind(Qhat, Q), 3)
+```
+
+**c) Gerar também uma amostra de mesmo tamanho utilizando o algoritmo de Box-Müller. Estimar os mesmos quantis anteriores nesta amostra e comparar com os resultados anteriores.**
+```{r}
+BoxMuller = function(n, mu=0, sigma=1){
+  # Polar: função que retorna dois números normais
+  Polar = function(){  # função sem argumento
+    repeat{
+      u = runif(2, -1, 1) # 2 v. uniformes U(-1,1)
+      r2 = as.numeric(u %*% u) # toma o quadrado
+      if((r2 > 0) & (r2 < 1)) break
+    } # fim do repeat
+    ff = sqrt(-2 * log(r2) / r2)
+    y = ff * u # vetor de dim 2 com var. normais padrao ind.
+    y
+  } # fim de polar
+  if(n %% 2 == 0){ # n par
+    k = n %/% 2 # pega a parte inteira da div.
+    for(ki in 1:k){
+      if(ki == 1) x = c(Polar()) else x = c(x, Polar())
+    }  # for
+  } else{ # n impar
+    k = n %/% 2
+    if(k == 0){ 
+      x = Polar()[1]
+    } else{
+      for(ki in 1:k){
+        if(ki == 1) x = c(Polar()) else x = c(x, Polar())
+      } # for
+      x = c(x, Polar()[1])
+    } # else interno
+  } # else n par
+  x = x * sigma + mu  # transformar de N(0, 1) para N(mu, sigma)
+  return(x)
+} # fim de BoxMuller
+
+c = BoxMuller(n)
+head(c)
+
+Qhat = quantile(c, p)
+Q = qnorm(p)
+round(rbind(Qhat, Q), 3)    # A diferença entre os quantis teóricos e os estimados é pequena para o caso da função BoxMuller 
+                            # O que indica que a amostra segue a distribuição normal.
+
+```
+
+**d) Gerar três QQ plots na mesma visualização para comparar o ajuste à normal das amostras geradas pelas diferentes funções**
+```{r}
+
+par(mfrow=c(1,3))
+
+qqnorm(a)
+qqline(a, col = "red") # qqplot convirma quq a amostra gerada pela função rnorm1 não segue a distribuição normal
+
+qqnorm(b)
+qqline(b, col = "red") # qqplot convirma quq a amostra gerada pela função rnorm2 segue a distribuição normal
+
+qqnorm(c)
+qqline(c, col = "red") # qqplot convirma quq a amostra gerada pela função BoxMuller segue a distribuição normal
+
+```
+
