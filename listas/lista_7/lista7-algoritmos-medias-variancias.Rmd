@@ -1,0 +1,64 @@
+# Lista 7 - Algoritmos para medias variancias
+
+
+#### 1. Implemente uma função chamada `m_var` que retorne a média para uma amostra de $n = 1.000$ números aleatórios. Use alguma estrutura de repetição para aplicar a fórmula:   
+
+```{r}
+rm(list = ls())
+
+
+
+m_media = function(x){
+  s = 0
+  for (i in 1:(length(x))){
+    s = s + x[i]
+  }
+  m = s/length(x)
+  return( m)
+}
+
+set.seed(1)
+x = rnorm(1000)
+m_media(x)
+mean(x)
+
+```
+
+#### 2. Incremente a função `m_var` para que ela retorne também a variância. Use a fórmula:  
+
+```{r}
+
+m_var = function(x){
+  sq = 0
+  sAq = 0
+  for (i in 1:length(x)) {
+    sq = sq + x[i]**2
+    sAq = sAq + x[i]  
+  }
+  S2 = (sq- (sAq**2/length(x)))/(length(x)-1)
+  return(S2)
+}
+x = rnorm(1000)
+m_media(x)
+mean(x)
+m_var(x)
+var(x)
+
+m_var2 = function(x){
+  s1 = 0
+  s = 0
+  for (i in 1:length(x)){
+    s1 = s + x[i]
+  }
+  m = s/length(x)
+  for (i in 1:length(x)) {
+    s = s + (x[i] - m)**2
+  }
+  S2 = s/(length(x)-1)
+  return(S2)
+}
+m_var2(x)
+
+```
+
+#### Confira se os resultados das duas funções foram os mesmos.  
