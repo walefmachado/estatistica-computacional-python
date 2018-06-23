@@ -1,0 +1,235 @@
+# Lista 3 - Funções no R 
+
+#### 1. Simule n dados de uma distribuição normal padrão, ou seja, $N(μ = 0, σ = 1)$ e:
+
+a) utilize a função regra emp para verificar se os dados simulados atendem à regra empírica. Teste com $n=100,1000,10000$
+```{r}
+regra_emp  = function(x, n){
+  s1 = sum(x > (mean(x)) - (sd(x)) & x < (mean(x)) + (sd(x)))/n 
+  s2 = sum(x > (mean(x)) - (2*(sd(x))) & x < (mean(x)) + (2*(sd(x))))/n
+  s3 = sum(x > (mean(x)) - (3*(sd(x))) & x < (mean(x)) + (3*(sd(x))))/n
+  list(sd1 = s1, sd2 = s2, sd3 =s3)
+}
+n = 100
+regra_emp(rnorm(n), n)
+
+n = 1000
+regra_emp(rnorm(n), n)
+
+n = 10000
+regra_emp(rnorm(n), n)
+```
+
+b) Obtenha o QQplot dos dados simulados.   
+```{r}
+n = 100
+qqnorm(rnorm(n))
+
+n = 1000
+qqnorm(rnorm(n))
+
+n = 10000
+qqnorm(rnorm(n))
+```
+
+#### 2. Modificar a função moeda com n lançamentos para que as ocorrências sejam “C” (cara) e “K” (coroa) e que:  
+
+a) além dos resultados “C” e “K”, a função também retorne as frequências dos resultados (absolutas e relativas - podendo-se usar o comando table para isso).  
+```{r}
+moeda = function(n){
+  a = sample(c("C","K"), n, rep=T)
+  b =table(a)
+  c = table(a)/n
+  list(amostra=a, freq_absoluta=b, freq_relativa=c)
+}
+moeda(100)$amostra
+```
+
+b) depois de usar a função, faça um gráfico de barras usando o resultado dos lançamentos da moeda com $n = 100$ e $n = 1000$.  
+```{r}
+barplot(table(moeda(100)$amostra))
+barplot(table(moeda(1000)$amostra)/1000 * 100)
+```
+
+#### 3. Criar a função dado que permita lançar um dado $n$ vezes e:  
+
+a) tenha o mesmo retorno da função anterior. 
+```{r}
+dado = function(n){
+  a = sample(1:6, n, replace = T)
+  b =table(a)
+  c = table(a)/n
+  list(amostra=a, freq_absoluta=b, freq_relativa=c)  
+}
+```
+
+b) compare com as probabilidades teóricas.  
+```{r}
+n = 100
+barplot(table(dado(n)$amostra)/n * 100)
+
+n = 1000
+barplot(table(dado(n)$amostra)/n * 100)
+
+n = 10000000
+barplot(table(dado(n)$amostra)/n * 100)
+```
+
+#### 4. Construir uma função para verificar quantos elementos de um vetor de dimensão n são menores ou iguais a uma constante $k$, real. Utilize as estruturas de repetição `for`, `while` e `repeat` para realizar tal tarefa (cada uma destas estruturas deverá ser implementada em uma diferente função).  
+```{r}
+vetor = c(2,5,4,6,8,7,9,4,5,88,77,5,58,6,52,45)
+
+confor = function(v, k){
+  c = 0
+  for(i in 1:length(v)){
+    if(v[i] <= k){
+      c = c + 1
+    }
+  }
+  print(c)
+}
+
+confor(vetor, 5)
+
+conwhile = function(v,k){
+  c = 0
+  i = 1
+  while(i <= length(v)){
+    if(v[i] <= k){
+      c = c + 1
+    }
+    i = i + 1
+  }
+  print(c)
+}
+
+conwhile(vetor, 5)
+
+conrepeat = function(v,k){
+  c = 0
+  i = 1
+  repeat{
+    if(v[i] <= k){
+      c = c + 1
+    }
+    i = i + 1
+    if(i >= length(v)) break
+  }
+  print(c)
+}
+
+conrepeat(vetor,5)
+
+```
+
+#### 5. Sobre a função `matrizA`:  
+
+a) generalize-a criando a função matrizA1 que aceite matrizes retangulares, ou seja, não quadradas e teste para: $3 × 3, 5 × 8, 1 × 4$.  
+```{r}
+matrizA1 = function(r,c){
+  A = matrix(0,r,c)
+  for(i in 1:r){
+    for(j in 1:c){
+      if(i == j){
+        A[i,j] = i * j
+      }else{
+        A[i,j] = i + j
+      }
+    }
+  }
+return(A)
+}
+matrizA1(3,3)
+matrizA1(5,8)
+matrizA1(1,4)
+```
+
+b) Inclua na função a saída que contenha a soma dos elementos dessa matriz. Assim, ao executar a função, a saída deve ser o obleto `A` e o objeto `soma`.  
+```{r}
+matrizA1S = function(r,c){
+  A = matrix(0,r,c)
+  soma = 0
+  for(i in 1:r){
+    for(j in 1:c){
+      if(i == j){
+        A[i,j] = i * j
+      }else{
+        A[i,j] = i + j
+      }
+      soma = soma + A[i,j]
+    }
+  }
+  list(A=A, soma=soma)
+}
+matrizA1S(3,3)
+matrizA1S(5,8)
+matrizA1S(1,4)
+```
+
+#### 6. Suponha que $X$ tenha a função densidade de probabilidade $f(x) = 3x 2 , 0 < x < 1$. Crie a função `f` para retornar essa $f.d.p.$ Faça o que se pede:  
+```{r}
+f = function(x){
+  fx = ifelse((0 < x & x < 1), (3 * x^2), 0)
+  return(fx)
+}
+
+f(0.8)
+```
+
+a) verifique que $f(x)$ é uma $f.d.p.$  
+```{r}
+curve(f(x), from = 0, to = 1, ylab = "y")
+integrate(f, -Inf, Inf)
+```
+
+b) obtenha o valor de $f(0, 5)$.  
+```{r}
+f(0.5)
+```
+
+c) calcule o valor de $P(0, 14 ≤ X ≤ 0, 71)$. Use a função `integrate`.  
+```{r}
+integrate(f, 0.14, 0.71)
+```
+
+d) sabendo que $f(x)$ é uma distribuição beta com parâmetros $α = 3$ e $β = 1$, obtenha o histograma de uma amostra de tamanho $n = 1000$ dessa distribuição usando a função pronta do R `rbeta`.
+```{r}
+hist(rbeta(1000, 3, 1), 100)
+```
+
+e) compare o resultado de b com o da função do R `dbeta`.
+```{r}
+f(0.5)
+dbeta(0.5,3,1)  # ???? Quais parâmetros da beta???
+```
+
+f) compare o resultado de c com os valores obtidos por meio da função `pbeta`.  
+```{r}
+integrate(f, 0.14, 0.71)
+integrate(pbeta, 0.14, 0.71, 3, 1)  # ????Quais parâmetros da beta???
+```
+
+#### 7. Sabendo que $X$ segue uma distribuição normal com média $μ$ e desvio padrão $σ$, sua $f.d.p.$ é: 
+
+$$ f(x)= \frac{1}{\sigma \sqrt{2\pi}}\exp\bigg(-\frac{1}{2}\frac{(x-\mu)^2}{\sigma^2} \bigg),-\infty<x<\infty. $$  
+
+a) Construa a função `normal` para retornar a $f.d.p.$ de uma distribuição normal com quaisquer valores de $μ$ e $σ$.  
+```{r}
+normal = function(x, mean, sd){
+  fx = (1/(sd * sqrt(2*pi)))*exp((-1/2)*(((x-mean)^2)/(sd^2)))
+  return(fx)
+}
+```
+
+b) Obtenha o valor da $f.d.p.$ no ponto $x = 5$ para uma normal com $μ = 4$ e $σ = 1$ usando sua função. Compare seu resultado com a função pronta do R.  
+```{r}
+normal(5,4,1)
+dnorm(5,4,1)
+```
+
+c) Calcule $P(X ≥ 4)$ para os parâmetros da letra b. Qual deve ser o resultado? 
+```{r}
+integrate(normal, 4, Inf, mean=4, sd=1)
+integrate(dnorm, 4, Inf, mean=4, sd=1)
+```
+
