@@ -2,6 +2,8 @@
 
 <br>
 
+-------------------------------------------------------------------------------------
+
 #### 1. Como seria um método simples para avaliar se uma sequência de números aleatórios segue uma distribuição uniforme? Implementar sua ideia. 
 ```{r}
 gna0 <- function(n, sem=0){
@@ -52,6 +54,8 @@ testa_gerador(gna0(n))
 testa_gerador(runif(n))
 testa_gerador(rnorm(n))
 ```
+
+-------------------------------------------------------------------------------------
 
 #### 2. Utilizar o gerador `gna01` para gerar $n$ realizações de uma distribuição exponencial $f(x) = \lambda e^ {−\lambda x}$. Sabemos do teorema da transformação de probabilidades:   
 

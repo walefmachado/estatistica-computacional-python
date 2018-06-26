@@ -90,6 +90,9 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
 }
@@ -121,69 +124,187 @@ $(document).ready(function () {
 </div>
 
 
-<div id="lista-7---algoritmos-para-medias-variancias" class="section level1">
-<h1>Lista 7 - Algoritmos para medias variancias</h1>
-<div id="implemente-uma-funcao-chamada-m_var-que-retorne-a-media-para-uma-amostra-de-n-1.000-numeros-aleatorios.-use-alguma-estrutura-de-repeticao-para-aplicar-a-formula" class="section level4">
-<h4>1. Implemente uma função chamada <code>m_var</code> que retorne a média para uma amostra de <span class="math inline">\(n = 1.000\)</span> números aleatórios. Use alguma estrutura de repetição para aplicar a fórmula:</h4>
-<pre class="r"><code>rm(list = ls())
-
-
-
-m_media = function(x){
-  s = 0
-  for (i in 1:(length(x))){
-    s = s + x[i]
+<div id="lista-2---funcoes" class="section level1">
+<h1>Lista 2 - Funções</h1>
+<p><br></p>
+<hr />
+<div id="criar-uma-funcao-que-receba-como-argumento-um-vetor-com-os-dados-e-retorne-o-valor-da-media-dos-elementos-nao-use-a-funcao-mean-ja-pronta-no-r.-faca-duas-versoes" class="section level4">
+<h4>1. Criar uma função que receba como argumento um vetor com os dados e retorne o valor da média dos elementos (não use a função mean já pronta no R). Faça duas versões:</h4>
+<p><strong>a) <code>media1</code> deve usar a estrutura de repetição for para ir somando cada número do vetor de dados.</strong></p>
+<pre class="r"><code>media1 = function(vet){
+  soma = 0
+  for (i in 1:length(vet)) {
+    soma = soma + vet[i]
   }
-  m = s/length(x)
-  return( m)
+  m = soma/(length(vet))
+  return(m)
 }
 
-set.seed(1)
-x = rnorm(1000)
-m_media(x)</code></pre>
-<pre><code>## [1] -0.01164814</code></pre>
-<pre class="r"><code>mean(x)</code></pre>
-<pre><code>## [1] -0.01164814</code></pre>
+v = c(1,2,3,4,5,6,7,8,9,10)
+media1(v)</code></pre>
+<pre><code>## [1] 5.5</code></pre>
+<p><strong>b) media2 pode usar a função sum pronta do R para somar os elementos do vetor.</strong></p>
+<pre class="r"><code>media2 = function(vet){
+  m = (sum(vet))/(length(vet))
+  return(m)
+}
+media2(v)</code></pre>
+<pre><code>## [1] 5.5</code></pre>
+<p><strong>c) Teste o uso de suas funções com:</strong><br />
+<code>d = rnorm(10, 5, 1)</code> <code>media1(d)</code> <code>media2(d)</code> <code>mean(d)</code><br />
+<strong>para verificar seus resultados</strong></p>
+<pre class="r"><code>d = rnorm(10, 5, 1)
+media1(d)</code></pre>
+<pre><code>## [1] 4.871326</code></pre>
+<pre class="r"><code>media2(d)</code></pre>
+<pre><code>## [1] 4.871326</code></pre>
+<pre class="r"><code>mean(d) # para verificar os resultados</code></pre>
+<pre><code>## [1] 4.871326</code></pre>
+<hr />
 </div>
-<div id="incremente-a-funcao-m_var-para-que-ela-retorne-tambem-a-variancia.-use-a-formula" class="section level4">
-<h4>2. Incremente a função <code>m_var</code> para que ela retorne também a variância. Use a fórmula:</h4>
-<pre class="r"><code>m_var = function(x){
-  sq = 0
-  sAq = 0
-  for (i in 1:length(x)) {
-    sq = sq + x[i]**2
-    sAq = sAq + x[i]  
-  }
-  S2 = (sq- (sAq**2/length(x)))/(length(x)-1)
-  return(S2)
+<div id="modificar-a-funcao-testet-para-retornar-tambem-os-graus-de-liberdade." class="section level4">
+<h4>2. Modificar a função testet para retornar também os graus de liberdade.</h4>
+<pre class="r"><code>testet = function(x, mu0 = 0){
+  n = length(x)
+  S = sd(x)
+  Xb = mean(x)
+  tc = (Xb - mu0)/(S/sqrt(n))
+  gl = n - 1
+  valorp = 2*(1-pt(abs(tc), gl)) # pt: probabilidade da distribuição t 
+  list(tc=tc, media=Xb, valorp=valorp, gl=gl)
 }
-x = rnorm(1000)
-m_media(x)</code></pre>
-<pre><code>## [1] -0.01626191</code></pre>
-<pre class="r"><code>mean(x)</code></pre>
-<pre><code>## [1] -0.01626191</code></pre>
-<pre class="r"><code>m_var(x)</code></pre>
-<pre><code>## [1] 1.081561</code></pre>
-<pre class="r"><code>var(x)</code></pre>
-<pre><code>## [1] 1.081561</code></pre>
-<pre class="r"><code>m_var2 = function(x){
-  s1 = 0
-  s = 0
-  for (i in 1:length(x)){
-    s1 = s + x[i]
-  }
-  m = s/length(x)
-  for (i in 1:length(x)) {
-    s = s + (x[i] - m)**2
-  }
-  S2 = s/(length(x)-1)
-  return(S2)
-}
-m_var2(x)</code></pre>
-<pre><code>## [1] 1.081826</code></pre>
+testet(d,5)</code></pre>
+<pre><code>## $tc
+## [1] -0.4142899
+## 
+## $media
+## [1] 4.871326
+## 
+## $valorp
+## [1] 0.6883614
+## 
+## $gl
+## [1] 9</code></pre>
+<hr />
 </div>
-<div id="confira-se-os-resultados-das-duas-funcoes-foram-os-mesmos." class="section level4">
-<h4>Confira se os resultados das duas funções foram os mesmos.</h4>
+<div id="modificar-a-funcao-testet-para-permitir-testes-unilaterais-ou-bilateral.-uma-variavel-tipo-devera-ter-as-opcoes-maior-menor-e-bilateral.-o-padrao-deve-ser-o-teste-bilateral.-a-definicao-da-funcao-deve-ser" class="section level4">
+<h4>3. Modificar a função testet para permitir testes unilaterais ou bilateral. Uma variável tipo deverá ter as opções: “maior”, “menor” e “bilateral”. O padrão deve ser o teste bilateral. A definição da função deve ser</h4>
+<p><code>testet = function(x, mu0=0, tipo =&quot;bilateral&quot;)</code>.</p>
+<pre class="r"><code>testet = function(x, mu0=0, tipo =&quot;bilateral&quot;){
+  n = length(x)
+  S = sd(x)
+  Xb = mean(x)
+  tc = (Xb - mu0)/(S/sqrt(n))
+  gl = n - 1
+  if(tipo==&quot;bilateral&quot;){
+    valorp = 2*(1-pt(abs(tc), gl))
+  }
+  if(tipo==&quot;maior&quot;){
+    valorp = (pt(abs(tc), gl))
+  }
+  if(tipo==&quot;menor&quot;){
+    valorp = (pt(abs(tc), gl)-1)
+  }
+  list(tc=tc, media=Xb, valorp=valorp, gl=gl)
+}
+testet(d,5, tipo = &quot;maior&quot;)</code></pre>
+<pre><code>## $tc
+## [1] -0.4142899
+## 
+## $media
+## [1] 4.871326
+## 
+## $valorp
+## [1] 0.6558193
+## 
+## $gl
+## [1] 9</code></pre>
+</div>
+<div id="compare-com-os-resultados-da-funcao-t.test-do-r-nos-3-casos.-teste-o-uso-de-sua-funcao-com" class="section level4">
+<h4>Compare com os resultados da função t.test do R nos 3 casos. Teste o uso de sua função com:</h4>
+<pre class="r"><code>w = rnorm(10, 3, 1)
+tc1 = testet(w, mu0=5, tipo=&quot;maior&quot;) # unilateral dir., mu0 = 5
+tc1</code></pre>
+<pre><code>## $tc
+## [1] -5.221546
+## 
+## $media
+## [1] 2.905939
+## 
+## $valorp
+## [1] 0.999726
+## 
+## $gl
+## [1] 9</code></pre>
+<pre class="r"><code>t.test(w, mu=5, alternative=&quot;g&quot;) # função do R</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  w
+## t = -5.2215, df = 9, p-value = 0.9997
+## alternative hypothesis: true mean is greater than 5
+## 95 percent confidence interval:
+##  2.170783      Inf
+## sample estimates:
+## mean of x 
+##  2.905939</code></pre>
+<pre class="r"><code>tc2 = testet(w, mu0=5, tipo=&quot;menor&quot;) # unilateral esq., mu0 = 5
+tc2</code></pre>
+<pre><code>## $tc
+## [1] -5.221546
+## 
+## $media
+## [1] 2.905939
+## 
+## $valorp
+## [1] -0.0002740337
+## 
+## $gl
+## [1] 9</code></pre>
+<pre class="r"><code>t.test(w, mu=5, alternative=&quot;l&quot;)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  w
+## t = -5.2215, df = 9, p-value = 0.000274
+## alternative hypothesis: true mean is less than 5
+## 95 percent confidence interval:
+##      -Inf 3.641095
+## sample estimates:
+## mean of x 
+##  2.905939</code></pre>
+<pre class="r"><code>tc3 = testet(w, mu0=5, tipo=&quot;bilateral&quot;) # bilateral
+tc3</code></pre>
+<pre><code>## $tc
+## [1] -5.221546
+## 
+## $media
+## [1] 2.905939
+## 
+## $valorp
+## [1] 0.0005480674
+## 
+## $gl
+## [1] 9</code></pre>
+<pre class="r"><code>t.test(w, mu=5)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  w
+## t = -5.2215, df = 9, p-value = 0.0005481
+## alternative hypothesis: true mean is not equal to 5
+## 95 percent confidence interval:
+##  1.998718 3.813160
+## sample estimates:
+## mean of x 
+##  2.905939</code></pre>
+<hr />
+</div>
+<div id="no-site-do-imrs-httpimrs.fjp.mg.gov.br-criar-outro-csv-com-variaveis-interessantes-abr-lo-no-r-salvar-como-.rdata-e-abrir-o-rdata-criado." class="section level4">
+<h4>4. No site do IMRS (<a href="http://imrs.fjp.mg.gov.br/" class="uri">http://imrs.fjp.mg.gov.br/</a>) criar outro csv com variáveis interessantes, abrı́-lo no R, salvar como .RData e abrir o RData criado.</h4>
+<pre class="r"><code>#imrs_mg = read.csv(&quot;DadosConsulta.csv&quot;, sep = &quot;;&quot;, dec = &quot;,&quot;, h = T)
+#save(imrs_mg, file = &quot;imrs_mg.Rdata&quot;)
+#load(&quot;imrs_mg.Rdata&quot;)</code></pre>
 </div>
 </div>
 

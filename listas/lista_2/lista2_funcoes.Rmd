@@ -1,0 +1,115 @@
+# Lista 2 - Funções  
+
+<br>
+
+-------------------------------------------------------------------------------------
+
+#### 1. Criar uma função que receba como argumento um vetor com os dados e retorne o valor da média dos elementos (não use a função mean já pronta no R). Faça duas versões:
+
+
+**a) `media1` deve usar a estrutura de repetição for para ir somando cada número do vetor de dados.**  
+```{r}
+media1 = function(vet){
+  soma = 0
+  for (i in 1:length(vet)) {
+    soma = soma + vet[i]
+  }
+  m = soma/(length(vet))
+  return(m)
+}
+
+v = c(1,2,3,4,5,6,7,8,9,10)
+media1(v)
+```
+
+**b) media2 pode usar a função sum pronta do R para somar os elementos do vetor.**  
+```{r}
+media2 = function(vet){
+  m = (sum(vet))/(length(vet))
+  return(m)
+}
+media2(v)
+```
+
+**c) Teste o uso de suas funções com:**  
+  `d = rnorm(10, 5, 1)`
+  `media1(d)`
+  `media2(d)`
+  `mean(d)`   
+**para verificar seus resultados**
+```{r}
+d = rnorm(10, 5, 1)
+media1(d)
+media2(d)
+mean(d) # para verificar os resultados
+```
+
+-------------------------------------------------------------------------------------
+
+#### 2. Modificar a função testet para retornar também os graus de liberdade.
+```{r}
+testet = function(x, mu0 = 0){
+  n = length(x)
+  S = sd(x)
+  Xb = mean(x)
+  tc = (Xb - mu0)/(S/sqrt(n))
+  gl = n - 1
+  valorp = 2*(1-pt(abs(tc), gl)) # pt: probabilidade da distribuição t 
+  list(tc=tc, media=Xb, valorp=valorp, gl=gl)
+}
+testet(d,5)
+```
+
+-------------------------------------------------------------------------------------
+
+#### 3. Modificar a função testet para permitir testes unilaterais ou bilateral. Uma variável tipo deverá ter as opções: “maior”, “menor” e “bilateral”. O padrão deve ser o teste bilateral. A definição da função deve ser   
+
+`testet = function(x, mu0=0, tipo ="bilateral")`.   
+
+```{r}
+testet = function(x, mu0=0, tipo ="bilateral"){
+  n = length(x)
+  S = sd(x)
+  Xb = mean(x)
+  tc = (Xb - mu0)/(S/sqrt(n))
+  gl = n - 1
+  if(tipo=="bilateral"){
+    valorp = 2*(1-pt(abs(tc), gl))
+  }
+  if(tipo=="maior"){
+    valorp = (pt(abs(tc), gl))
+  }
+  if(tipo=="menor"){
+    valorp = (pt(abs(tc), gl)-1)
+  }
+  list(tc=tc, media=Xb, valorp=valorp, gl=gl)
+}
+testet(d,5, tipo = "maior")
+```
+
+#### Compare com os resultados da função t.test do R nos 3 casos. Teste o uso de sua função com:  
+```{r}
+w = rnorm(10, 3, 1)
+tc1 = testet(w, mu0=5, tipo="maior") # unilateral dir., mu0 = 5
+tc1
+t.test(w, mu=5, alternative="g") # função do R
+
+tc2 = testet(w, mu0=5, tipo="menor") # unilateral esq., mu0 = 5
+tc2
+t.test(w, mu=5, alternative="l")
+
+tc3 = testet(w, mu0=5, tipo="bilateral") # bilateral
+tc3
+t.test(w, mu=5)
+```
+
+-------------------------------------------------------------------------------------
+
+#### 4. No site do IMRS (http://imrs.fjp.mg.gov.br/) criar outro csv com variáveis interessantes, abrı́-lo no R, salvar como .RData e abrir o RData criado.  
+```{r}
+#imrs_mg = read.csv("DadosConsulta.csv", sep = ";", dec = ",", h = T)
+#save(imrs_mg, file = "imrs_mg.Rdata")
+#load("imrs_mg.Rdata")
+```
+
+

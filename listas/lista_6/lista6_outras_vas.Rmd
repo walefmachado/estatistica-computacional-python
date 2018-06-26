@@ -2,6 +2,8 @@
 
 <br>
 
+-------------------------------------------------------------------------------------
+
 #### Gerar realizações de variáveis normais padrão utilizando as aproximações dadas por: 
 
 $$X = [U^{0,135} - (1-U^{0,135})]/0,1975$$  
@@ -17,9 +19,11 @@ rnorm1 = function(n){
 $$ X = \displaystyle \sum^{12}_{i}U_i - 6$$  
 ```{r}
 rnorm2 = function(n){
-  x = 0
-  for (i  in 1:12) {
-    x = x + (runif(n, 0, 1) - 6) 
+  x = numeric()
+  for (i  in 1:n) {
+    U = runif(12)
+    y = sum(U) - 6
+    x = c(x, y)
   }
   return(x)
 }
