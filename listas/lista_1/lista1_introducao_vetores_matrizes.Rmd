@@ -128,4 +128,76 @@ head((sin(y[seq(1,249)]))/(cos(x[seq(2,250)])))
 head(x[seq(1,248)]+2*x[seq(2,249)]-x[seq(3,250)])
 ```
 
+-------------------------------------------------------------------------------------
 
+#### 7. Essa questão usa os vetores $x$ e $y$ criados na questão anterior e as funções `sort`, `order`, `mean`, `sqrt`, `sum` e `abs`.  
+
+**a) Selecione os valores de y que são maiores do que 600.**
+```{r}
+sort(y)[which(((sort(y))>600)==TRUE)]
+```
+
+**b) Quais são as posições correspondentes aos valores em y que são maiores do que 600?** 
+```{r}
+which((y>600)==TRUE)
+```
+
+**c) Quais são os valores em x que correspondem aos valores em y que são maiores do que 600? (corresponder quer dizer que estão nas mesmas posições).**
+```{r}
+which((y>600)==TRUE & (x>600)==TRUE)
+```
+
+**d) Crie o vetor $(|x_1-\overline x|^{1/2}, |x_2-\overline x|^{1/2},...,|x_n-\overline x|^{1/2}) $ em que x̄ denota a média dos valores de x.**
+```{r}
+head(sqrt(abs(x[seq(1,250)]-mean(x))))
+```
+
+**e) Quantos valores em y estão entre o valor máximo de y e esse valor menos 200?**
+```{r}
+length(sort(y)[which(((sort(y))>(sort(y)[250]-200))==TRUE)])
+```
+
+**f) Quantos números em x são divisı́veis por 2? (O operador de resto da divisão é denotado por %%).**
+```{r}
+length(which((x%%2==0)==TRUE))
+```
+
+**g) Ordene os números do vetor x na ordem crescente dos valores em y.**
+```{r}
+head(x[order(x)])
+```
+
+**h) Selecione os elementos em y das posições 1, 4, 7, 10, 13 etc.**
+```{r}
+y[seq(1,250,3)]
+```
+
+#### 8. Seja a matriz:  
+
+$$A = \begin{bmatrix} 1 & 1 & 3  \\ 5 & 2 & 6 \\ -2 & -1 & -3\end{bmatrix} $$
+
+```{r}
+A = matrix(c(1, 5, -2, 1, 2, -1, 3, 6, -3), 3, 3)
+```
+
+
+**a) Verifique que $A^3 = 0$, em que $0$ é uma matriz de zeros $3 × 3$.**
+```{r}
+(A%*%A)%*%A
+```
+
+**b) Substitua a terceira coluna de $A$ pela soma das segunda e terceira colunas.**
+```{r}
+A[,3] = apply((A[,2:3]), 1, sum)
+```
+
+#### 9. Crie a seguinte matriz $B$ com 15 linhas:  
+
+$$A = \begin{bmatrix} 10 & -10 & 10  \\ 10 & -10 & 10 \\ &...&&\\10 & -10 & 10 \end{bmatrix} $$
+
+```{r}
+B = matrix(c(rep(10,15), rep(-10,15), rep(10,15)), 15, 3)
+
+(t(B)%*%B)
+```
+#### Obtenha a matriz $B^T B 3 × 3$ (veja a ajuda da função `crossproduct()`).
